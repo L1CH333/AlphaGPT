@@ -41,7 +41,6 @@ def _ts_rank(x: torch.Tensor, window: int) -> torch.Tensor:
     windows = x_pad.unfold(1, window, 1)
     
     # Calculate rank for each window
-    sorted_windows = torch.sort(windows, dim=-1)[0]
     current_val = x.unsqueeze(-1)
     
     # Find position in sorted window

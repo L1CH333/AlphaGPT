@@ -105,7 +105,7 @@ class AShareTickDataLoader:
         
         def to_tensor(col):
             pivot = df.pivot(index='timestamp', columns='stock_code', values=col)
-            pivot = pivot.fillna(method='ffill').fillna(method='bfill').fillna(0.0)
+            pivot = pivot.ffill().bfill().fillna(0.0)
             return torch.tensor(pivot.values.T, dtype=torch.float32, device=AShareConfig.DEVICE)
         
         return {

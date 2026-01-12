@@ -126,8 +126,11 @@ class TickIndicators:
             large_threshold_percentile: 大单阈值百分位
         Returns:
             ratio of large orders
+        Note:
+            For production use with large datasets, consider using a rolling quantile
+            or pre-computed threshold to improve performance.
         """
-        # Calculate threshold (简化版本，实际应该用历史数据)
+        # Calculate threshold (simplified version using global quantile)
         threshold = torch.quantile(volume, large_threshold_percentile / 100.0, dim=1, keepdim=True)
         large_orders = (volume > threshold).float()
         
