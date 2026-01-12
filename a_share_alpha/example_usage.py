@@ -97,13 +97,14 @@ def example_4_manual_factor_test():
     bt = AShareBacktest()
     
     # 手动定义因子公式
-    # 例如: F0 (返回) DELAY5 SUB -> 当前收益 - 5期前收益
+    # Stack-based postfix notation:
+    # To compute: F0 - DELAY5(F0), we need: F0 F0 DELAY5 SUB
     # 特征索引 0-9, 操作符从 10 开始
-    # F0=0, DELAY5=15 (查看 ops.py), SUB=1
+    # F0=0, DELAY5=20, SUB=11
     
-    formula = [0, 15, 1]  # F0 DELAY5 SUB
+    formula = [0, 0, 20, 11]  # F0 F0 DELAY5 SUB (momentum factor)
     
-    print(f"测试因子: F0 DELAY5 SUB (动量因子)")
+    print(f"测试因子: F0 - DELAY5(F0) (动量因子)")
     
     # 执行因子
     factor_values = vm.execute(formula, loader.feat_tensor)
@@ -142,12 +143,12 @@ def example_5_batch_test():
     vm = AShareStackVM()
     bt = AShareBacktest()
     
-    # 预定义因子库
+    # 预定义因子库 (使用栈式后缀表达式)
     factor_library = {
-        "动量因子": [0, 15, 1],           # F0 DELAY5 SUB
-        "订单流因子": [1, 5, 2],          # F1 F5 MUL
-        "反转因子": [0, 16, 4],           # F0 DELAY1 NEG
-        "波动率因子": [0, 18, 1],         # F0 STD10 (假设 STD10=18)
+        "动量因子": [0, 0, 20, 11],       # F0 - DELAY5(F0)
+        "订单流×成交量": [1, 5, 12],      # F1 * F5
+        "价差标准化": [2, 26],            # STD10(F2)
+        "反转因子": [0, 19, 14],          # NEG(DELAY1(F0))
     }
     
     results = []
